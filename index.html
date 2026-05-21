@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Impact Dashboard</title>
+		<link
+			rel="preconnect"
+			href="https://fonts.googleapis.com"
+		/>
+		<link
+			rel="preconnect"
+			href="https://fonts.gstatic.com"
+			crossorigin
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap"
+			rel="stylesheet"
+		/>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						fontFamily: {
+							display: ["Space Grotesk", "sans-serif"],
+							body: ["DM Sans", "sans-serif"]
+						},
+						animation: {
+							floatIn: "floatIn 700ms cubic-bezier(0.22, 1, 0.36, 1) both",
+							lift: "lift 6s ease-in-out infinite",
+							barGrow: "barGrow 900ms ease-out both",
+							pulseSoft: "pulseSoft 3.2s ease-in-out infinite"
+						},
+						keyframes: {
+							floatIn: {
+								"0%": { opacity: "0", transform: "translateY(14px) scale(0.985)" },
+								"100%": { opacity: "1", transform: "translateY(0) scale(1)" }
+							},
+							lift: {
+								"0%, 100%": { transform: "translateY(0px)" },
+								"50%": { transform: "translateY(-8px)" }
+							},
+							barGrow: {
+								"0%": { width: "0%" },
+								"100%": { width: "var(--target-width)" }
+							},
+							pulseSoft: {
+								"0%, 100%": { opacity: "0.24" },
+								"50%": { opacity: "0.42" }
+							}
+						},
+						colors: {
+							ink: "#05070d",
+							panel: "#0b1020",
+							glow: "#22d3ee",
+							accent: "#f59e0b"
+						},
+						boxShadow: {
+							soft: "0 18px 50px -22px rgba(8, 15, 38, 0.9)"
+						}
+					}
+				}
+			};
+		</script>
+	</head>
+		<body class="min-h-screen bg-ink font-body text-slate-100 antialiased">
+		<div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+				<div class="absolute -top-24 left-[-10%] h-72 w-72 rounded-full bg-cyan-400/20 blur-3xl motion-safe:animate-pulseSoft"></div>
+				<div class="absolute right-[-8%] top-1/3 h-80 w-80 rounded-full bg-amber-400/20 blur-3xl motion-safe:animate-lift"></div>
+				<div class="absolute bottom-[-12%] left-1/4 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl motion-safe:animate-pulseSoft motion-safe:[animation-delay:500ms]"></div>
+		</div>
+
+			<header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur motion-safe:animate-floatIn">
+			<nav class="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+				<div>
+					<p class="font-display text-xs uppercase tracking-[0.35em] text-cyan-300">Creator Analytics</p>
+					<h1 class="font-display text-xl font-bold sm:text-2xl lg:text-3xl">Ad Impact & Conversion Dashboard</h1>
+				</div>
+				<div class="rounded-full border border-cyan-400/40 bg-cyan-400/10 px-3 py-1 text-xs font-semibold text-cyan-200 sm:text-sm">
+					Last 7 days
+				</div>
+			</nav>
+		</header>
+
+			<main class="mx-auto w-full max-w-7xl space-y-6 px-4 py-6 sm:px-6 md:space-y-8 lg:px-8 lg:py-8">
+				<section aria-labelledby="kpi-heading" class="space-y-4 motion-safe:animate-floatIn motion-safe:[animation-delay:120ms]">
+				<div class="flex items-end justify-between">
+					<h2 id="kpi-heading" class="font-display text-lg font-semibold sm:text-xl"> KPI Outcomes</h2>
+					<p class="text-xs text-slate-400 sm:text-sm">Balanced view across business, audience, and cost</p>
+				</div>
+				<ul id="kpi-grid" class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"></ul>
+			</section>
+
+				<section aria-labelledby="drivers-heading" class="space-y-4 motion-safe:animate-floatIn motion-safe:[animation-delay:220ms]">
+				<div class="flex items-end justify-between">
+					<h2 id="drivers-heading" class="font-display text-lg font-semibold sm:text-xl">Driver Analysis</h2>
+					<p class="text-xs text-slate-400 sm:text-sm">Why results moved this week</p>
+				</div>
+
+				<div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+					<article class="rounded-2xl border border-slate-800 bg-panel/90 p-4 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-cyan-400/40">
+						<h3 class="font-display text-base font-semibold">Conversion by Funnel Stage</h3>
+						<ul id="funnel-list" class="mt-4 space-y-3"></ul>
+					</article>
+
+					<article class="rounded-2xl border border-slate-800 bg-panel/90 p-4 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-cyan-400/40 lg:col-span-2">
+						<h3 class="font-display text-base font-semibold">Performance by Platform</h3>
+						<div class="mt-4 overflow-x-auto">
+							<table class="min-w-full text-left text-sm">
+								<thead class="text-xs uppercase tracking-wider text-slate-400">
+									<tr>
+										<th class="pb-3 pr-4">Platform</th>
+										<th class="pb-3 pr-4">Impressions</th>
+										<th class="pb-3 pr-4">CTR</th>
+										<th class="pb-3 pr-4">CVR</th>
+										<th class="pb-3 pr-4">Revenue</th>
+									</tr>
+								</thead>
+								<tbody id="platform-table" class="divide-y divide-slate-800"></tbody>
+							</table>
+						</div>
+					</article>
+				</div>
+
+				<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+					<article class="rounded-2xl border border-slate-800 bg-panel/90 p-4 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-cyan-400/40">
+						<h3 class="font-display text-base font-semibold">Quality Drivers</h3>
+						<ul id="quality-list" class="mt-4 space-y-2 text-sm text-slate-200"></ul>
+					</article>
+
+					<article class="rounded-2xl border border-slate-800 bg-panel/90 p-4 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-cyan-400/40">
+						<h3 class="font-display text-base font-semibold">Product Performance</h3>
+						<ul id="product-list" class="mt-4 space-y-3"></ul>
+					</article>
+				</div>
+			</section>
+
+				<section aria-labelledby="ops-heading" class="space-y-4 motion-safe:animate-floatIn motion-safe:[animation-delay:320ms]">
+				<div class="flex items-end justify-between">
+					<h2 id="ops-heading" class="font-display text-lg font-semibold sm:text-xl">Operational Details</h2>
+					<p class="text-xs text-slate-400 sm:text-sm">Activity and engagement execution details</p>
+				</div>
+
+				<div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+					<article class="rounded-2xl border border-slate-800 bg-panel/90 p-4 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-cyan-400/40">
+						<h3 class="font-display text-base font-semibold">Activity by Platform</h3>
+						<div class="mt-4 overflow-x-auto">
+							<table class="min-w-full text-left text-sm">
+								<thead class="text-xs uppercase tracking-wider text-slate-400">
+									<tr>
+										<th class="pb-3 pr-4">Platform</th>
+										<th class="pb-3 pr-4">Posts</th>
+										<th class="pb-3 pr-4">Stories</th>
+										<th class="pb-3 pr-4">Reels/Videos</th>
+									</tr>
+								</thead>
+								<tbody id="activity-table" class="divide-y divide-slate-800"></tbody>
+							</table>
+						</div>
+					</article>
+
+					<article class="rounded-2xl border border-slate-800 bg-panel/90 p-4 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-cyan-400/40">
+						<h3 class="font-display text-base font-semibold">Engagement by Platform</h3>
+						<ul id="engagement-list" class="mt-4 space-y-3"></ul>
+					</article>
+				</div>
+			</section>
+		</main>
+
+		<footer class="mx-auto w-full max-w-7xl px-4 pb-8 pt-2 text-xs text-slate-500 sm:px-6 lg:px-8">
+			 <p>&copy; 2024 Bambam AI Engineering. All rights reserved.</p>
+		</footer>
+
+		<script>
+			const platformData = [
+				{
+					name: "Instagram",
+					impressions: 180000,
+					clicks: 7200,
+					conversions: 432,
+					revenue: 21800,
+					spend: 6900,
+					interactions: 18900,
+					likes: 11600,
+					comments: 3100,
+					shares: 2200,
+					saves: 2000,
+					posts: 9,
+					stories: 19,
+					media: 12,
+					leads: 970,
+					qualifiedLeads: 620,
+					attendanceRate: 0.84,
+					passRate: 0.73
+				},
+				{
+					name: "TikTok",
+					impressions: 240000,
+					clicks: 8300,
+					conversions: 390,
+					revenue: 19500,
+					spend: 7700,
+					interactions: 25300,
+					likes: 17100,
+					comments: 2900,
+					shares: 3900,
+					saves: 1400,
+					posts: 7,
+					stories: 0,
+					media: 15,
+					leads: 900,
+					qualifiedLeads: 490,
+					attendanceRate: 0.78,
+					passRate: 0.68
+				},
+				{
+					name: "YouTube",
+					impressions: 96000,
+					clicks: 3900,
+					conversions: 258,
+					revenue: 17150,
+					spend: 4500,
+					interactions: 9800,
+					likes: 6800,
+					comments: 1200,
+					shares: 1000,
+					saves: 800,
+					posts: 3,
+					stories: 0,
+					media: 6,
+					leads: 510,
+					qualifiedLeads: 348,
+					attendanceRate: 0.87,
+					passRate: 0.8
+				}
+			];
+
+			const funnel = [
+				{ stage: "Ad Views", value: 516000 },
+				{ stage: "Landing Clicks", value: 19400 },
+				{ stage: "Qualified Leads", value: 1458 },
+				{ stage: "Checkouts", value: 1230 },
+				{ stage: "Sales", value: 1080 }
+			];
+
+			const productData = [
+				{ name: "Creator Growth Bootcamp", conversions: 420, commission: 15120, cvr: 0.068 },
+				{ name: "UGC Toolkit", conversions: 360, commission: 11250, cvr: 0.059 },
+				{ name: "Monthly Coaching", conversions: 300, commission: 9400, cvr: 0.051 }
+			];
+
+			const totals = platformData.reduce(
+				(acc, item) => {
+					acc.impressions += item.impressions;
+					acc.clicks += item.clicks;
+					acc.conversions += item.conversions;
+					acc.revenue += item.revenue;
+					acc.spend += item.spend;
+					acc.interactions += item.interactions;
+					acc.likes += item.likes;
+					acc.comments += item.comments;
+					acc.shares += item.shares;
+					acc.saves += item.saves;
+					acc.leads += item.leads;
+					acc.qualifiedLeads += item.qualifiedLeads;
+					return acc;
+				},
+				{
+					impressions: 0,
+					clicks: 0,
+					conversions: 0,
+					revenue: 0,
+					spend: 0,
+					interactions: 0,
+					likes: 0,
+					comments: 0,
+					shares: 0,
+					saves: 0,
+					leads: 0,
+					qualifiedLeads: 0
+				}
+			);
+
+			const signupCount = 1390;
+			const activeUsers = 1120;
+			const usersAtStart = 1210;
+			const churnedUsers = 90;
+			const mrr = 12800;
+			const nps = 56;
+			const csat = 89;
+			const avgLeadTimeDays = 3.7;
+			const processCompletionRate = funnel[funnel.length - 1].value / funnel[2].value;
+
+			const pct = (num) => `${(num * 100).toFixed(1)}%`;
+			const money = (num) =>
+				new Intl.NumberFormat("en-US", {
+					style: "currency",
+					currency: "USD",
+					maximumFractionDigits: 0
+				}).format(num);
+			const compact = (num) =>
+				new Intl.NumberFormat("en-US", {
+					notation: "compact",
+					maximumFractionDigits: 1
+				}).format(num);
+
+			const kpis = [
+				{
+					label: "Volume",
+					value: compact(totals.conversions),
+					sub: `${compact(signupCount)} sign-ups | ${compact(activeUsers)} active users | ${compact(totals.impressions)} impressions`
+				},
+				{
+					label: "Revenue",
+					value: money(totals.revenue),
+					sub: `${money(mrr)} MRR | Avg price ${money(totals.revenue / totals.conversions)}`
+				},
+				{
+					label: "Engagement",
+					value: pct(totals.interactions / totals.impressions),
+					sub: `${compact(totals.interactions)} interactions | CVR ${pct(totals.conversions / totals.clicks)}`
+				},
+				{
+					label: "Retention",
+					value: pct(1 - churnedUsers / usersAtStart),
+					sub: `Churn ${pct(churnedUsers / usersAtStart)} | Process complete ${pct(processCompletionRate)}`
+				},
+				{
+					label: "Performance",
+					value: compact(totals.conversions),
+					sub: `CTR ${pct(totals.clicks / totals.impressions)} | CVR ${pct(totals.conversions / totals.clicks)}`
+				},
+				{
+					label: "Satisfaction",
+					value: `NPS ${nps}`,
+					sub: `CSAT ${csat}% loyalty and satisfaction blend`
+				},
+				{
+					label: "Efficiency",
+					value: money(totals.spend / totals.conversions),
+					sub: `Margin ${pct((totals.revenue - totals.spend) / totals.revenue)} | Lead time ${avgLeadTimeDays} days`
+				}
+			];
+
+			const kpiGrid = document.getElementById("kpi-grid");
+			kpis.forEach((kpi, index) => {
+				const item = document.createElement("li");
+				item.innerHTML = `
+					<article class="h-full rounded-2xl border border-slate-800 bg-panel/90 p-4 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-cyan-400/40 motion-safe:animate-floatIn" style="animation-delay:${120 + index * 90}ms;">
+						<h3 class="text-xs uppercase tracking-wider text-slate-400">${kpi.label}</h3>
+						<p class="mt-2 font-display text-2xl font-bold text-white">${kpi.value}</p>
+						<p class="mt-2 text-sm text-slate-300">${kpi.sub}</p>
+					</article>
+				`;
+				kpiGrid.appendChild(item);
+			});
+
+			const funnelList = document.getElementById("funnel-list");
+			const maxFunnel = funnel[0].value;
+			funnel.forEach((step) => {
+				const row = document.createElement("li");
+				const width = (step.value / maxFunnel) * 100;
+				row.innerHTML = `
+					<div class="flex items-center justify-between text-sm">
+						<span class="text-slate-300">${step.stage}</span>
+						<span class="font-semibold text-slate-100">${compact(step.value)}</span>
+					</div>
+					<div class="mt-2 h-2 rounded-full bg-slate-800">
+						<div class="h-2 rounded-full bg-cyan-400 motion-safe:animate-barGrow" style="--target-width:${width}%;width:var(--target-width);"></div>
+					</div>
+				`;
+				funnelList.appendChild(row);
+			});
+
+			const platformTable = document.getElementById("platform-table");
+			platformData.forEach((platform) => {
+				const row = document.createElement("tr");
+				row.className = "text-slate-200";
+				row.innerHTML = `
+					<td class="py-3 pr-4 font-semibold">${platform.name}</td>
+					<td class="py-3 pr-4">${compact(platform.impressions)}</td>
+					<td class="py-3 pr-4">${pct(platform.clicks / platform.impressions)}</td>
+					<td class="py-3 pr-4">${pct(platform.conversions / platform.clicks)}</td>
+					<td class="py-3 pr-4">${money(platform.revenue)}</td>
+				`;
+				platformTable.appendChild(row);
+			});
+
+			const qualityList = document.getElementById("quality-list");
+			const qualityMetrics = [
+				{ label: "Qualified lead ratio", value: pct(totals.qualifiedLeads / totals.leads) },
+				{
+					label: "Attendance rate",
+					value: pct(platformData.reduce((sum, p) => sum + p.attendanceRate, 0) / platformData.length)
+				},
+				{
+					label: "Pass rate",
+					value: pct(platformData.reduce((sum, p) => sum + p.passRate, 0) / platformData.length)
+				}
+			];
+
+			qualityMetrics.forEach((metric) => {
+				const item = document.createElement("li");
+				item.className = "flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/70 px-3 py-2";
+				item.innerHTML = `<span>${metric.label}</span><strong class="text-cyan-300">${metric.value}</strong>`;
+				qualityList.appendChild(item);
+			});
+
+			const productList = document.getElementById("product-list");
+			productData.forEach((product) => {
+				const item = document.createElement("li");
+				item.className = "rounded-xl border border-slate-800 bg-slate-900/70 p-3";
+				item.innerHTML = `
+					<p class="font-semibold text-slate-100">${product.name}</p>
+					<p class="mt-1 text-sm text-slate-300">${product.conversions} conversions | ${money(product.commission)} commissions</p>
+					<p class="mt-1 text-sm text-amber-300">CVR ${pct(product.cvr)}</p>
+				`;
+				productList.appendChild(item);
+			});
+
+			const activityTable = document.getElementById("activity-table");
+			platformData.forEach((platform) => {
+				const row = document.createElement("tr");
+				row.className = "text-slate-200";
+				row.innerHTML = `
+					<td class="py-3 pr-4 font-semibold">${platform.name}</td>
+					<td class="py-3 pr-4">${platform.posts}</td>
+					<td class="py-3 pr-4">${platform.stories}</td>
+					<td class="py-3 pr-4">${platform.media}</td>
+				`;
+				activityTable.appendChild(row);
+			});
+
+			const engagementList = document.getElementById("engagement-list");
+			platformData.forEach((platform) => {
+				const totalEngagement = platform.likes + platform.comments + platform.shares + platform.saves;
+				const item = document.createElement("li");
+				item.className = "rounded-xl border border-slate-800 bg-slate-900/70 p-3";
+				item.innerHTML = `
+					<div class="flex items-center justify-between">
+						<p class="font-semibold text-slate-100">${platform.name}</p>
+						<p class="text-sm font-semibold text-cyan-300">${compact(totalEngagement)}</p>
+					</div>
+					<p class="mt-1 text-xs text-slate-400">${compact(platform.likes)} likes • ${compact(platform.comments)} comments • ${compact(platform.shares)} shares • ${compact(platform.saves)} saves</p>
+				`;
+				engagementList.appendChild(item);
+			});
+		</script>
+	</body>
+</html>
